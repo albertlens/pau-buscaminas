@@ -15,8 +15,12 @@ export const Board: React.FC<BoardProps> = ({ board, onCellClick, onCellRightCli
     onCellRightClick(x, y);
   };
 
+  const handleLongPress = (x: number, y: number) => {
+    onCellRightClick(x, y);
+  };
+
   return (
-    <div className="inline-block p-4 bg-slate-200 dark:bg-slate-700 rounded-xl shadow-2xl">
+    <div className="inline-block p-2 sm:p-4 bg-slate-200 dark:bg-slate-700 rounded-xl shadow-2xl overflow-x-auto max-w-full">
       <div className="flex flex-col gap-0.5">
         {board.map((row, y) => (
           <div key={y} className="flex gap-0.5">
@@ -26,6 +30,7 @@ export const Board: React.FC<BoardProps> = ({ board, onCellClick, onCellRightCli
                 cell={cell}
                 onClick={() => onCellClick(cell.x, cell.y)}
                 onRightClick={(e) => handleRightClick(e, cell.x, cell.y)}
+                onLongPress={() => handleLongPress(cell.x, cell.y)}
                 gameStatus={gameStatus}
               />
             ))}

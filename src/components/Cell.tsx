@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import type { Cell as CellType } from '../types/game';
 
 interface CellProps {
   cell: CellType;
   onClick: () => void;
   onRightClick: (e: React.MouseEvent) => void;
+  onLongPress: () => void;
   gameStatus: string;
 }
 
@@ -19,10 +20,40 @@ const COLORS = {
   8: 'text-pink-600 dark:text-pink-400',
 };
 
-export const Cell: React.FC<CellProps> = ({ cell, onClick, onRightClick, gameStatus }) => {
+export const Cell: React.FC<CellProps> = ({ cell, onClick, onRightClick, onLongPress, gameStatus }) => {
+  const [isPressing, setIsPressing] = useState(false);
+  const longPressTimer = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    e.preventDefault();
+    setIsPressing(true);
+    longPressTimer.current = window.setTimeout(() => {
+      onLongPress();
+      setIsPressing(false);
+    }, 500);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    e.preventDefault();
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      if (isPressing) {
+        onClick();
+      }
+    }
+    setIsPressing(false);
+  };
+
+  const handleTouchCancel = () => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+    }
+    setIsPressing(false);
+  };
+
   const getCellContent = () => {
     if (cell.isFlagged && !cell.isRevealed) {
-      return <span className="text-2xl">🚩</span>;
+      return <span className="text-lg sm:text-xl md:text-2xl">🚩</span>;
     }
 
     if (!cell.isRevealed) {
@@ -30,12 +61,12 @@ export const Cell: React.FC<CellProps> = ({ cell, onClick, onRightClick, gameSta
     }
 
     if (cell.isMine) {
-      return <span className="text-2xl">💣</span>;
+      return <span className="text-lg sm:text-xl md:text-2xl">💣</span>;
     }
 
     if (cell.neighborMines > 0) {
       return (
-        <span className={`font-bold text-lg ${COLORS[cell.neighborMines as keyof typeof COLORS]}`}>
+        <span className={`font-bold text-sm sm:text-base md:text-lg ${COLORS[cell.neighborMines as keyof typeof COLORS]}`}>
           {cell.neighborMines}
         </span>
       );
@@ -45,7 +76,7 @@ export const Cell: React.FC<CellProps> = ({ cell, onClick, onRightClick, gameSta
   };
 
   const getCellClasses = () => {
-    const baseClasses = 'w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center cell-transition border select-none';
+    const baseClasses = 'w-7 h-7 sm:w-9 sm:h-9 md:w-10 md:h-10 flex items-center justify-center cell-transition border select-none touch-none';
     
     if (!cell.isRevealed) {
       return `${baseClasses} bg-gradient-to-br from-slate-300 to-slate-400 dark:from-slate-600 dark:to-slate-700 
@@ -62,9 +93,12 @@ export const Cell: React.FC<CellProps> = ({ cell, onClick, onRightClick, gameSta
 
   return (
     <button
-      className={getCellClasses()}
+      className={`${getCellClasses()} ${isPressing ? 'scale-95' : ''}`}
       onClick={onClick}
       onContextMenu={onRightClick}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchCancel}
       disabled={cell.isRevealed}
     >
       {getCellContent()}

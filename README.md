@@ -35,11 +35,17 @@ El juego estará disponible en `http://localhost:5173`
 
 ## 🎯 Cómo Jugar
 
+### En PC/Desktop:
 1. **Selecciona la dificultad**: Elige entre Fácil, Medio o Difícil
 2. **Click izquierdo**: Revela una celda
 3. **Click derecho**: Marca/desmarca una bandera 🚩
 4. **Objetivo**: Revelar todas las celdas que no contienen minas
 5. **Números**: Indican cuántas minas hay en las 8 celdas adyacentes
+
+### En Móviles/Tablets:
+1. **Toca una celda**: Revela la celda
+2. **Mantén presionado (0.5s)**: Marca/desmarca una bandera 🚩
+3. **Interfaz optimizada**: Celdas y controles adaptados para pantallas táctiles
 
 ## 🛠️ Tecnologías Utilizadas
 

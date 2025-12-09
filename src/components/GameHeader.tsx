@@ -28,24 +28,24 @@ export const GameHeader: React.FC<GameHeaderProps> = ({ minesLeft, timer, gameSt
   };
 
   return (
-    <div className="flex items-center justify-between w-full max-w-md px-6 py-4 bg-white dark:bg-slate-800 rounded-xl shadow-lg mb-6">
-      <div className="flex items-center gap-2">
-        <span className="text-2xl">💣</span>
-        <span className="text-xl font-bold text-slate-700 dark:text-slate-200">
+    <div className="flex items-center justify-between w-full max-w-md px-3 py-3 sm:px-6 sm:py-4 bg-white dark:bg-slate-800 rounded-xl shadow-lg mb-4 sm:mb-6">
+      <div className="flex items-center gap-1 sm:gap-2">
+        <span className="text-xl sm:text-2xl">💣</span>
+        <span className="text-lg sm:text-xl font-bold text-slate-700 dark:text-slate-200">
           {minesLeft}
         </span>
       </div>
 
       <button
         onClick={onReset}
-        className="text-4xl hover:scale-110 transition-transform duration-200 active:scale-95"
+        className="text-3xl sm:text-4xl hover:scale-110 transition-transform duration-200 active:scale-95"
       >
         {getStatusEmoji()}
       </button>
 
-      <div className="flex items-center gap-2">
-        <span className="text-2xl">⏱️</span>
-        <span className="text-xl font-bold text-slate-700 dark:text-slate-200 font-mono">
+      <div className="flex items-center gap-1 sm:gap-2">
+        <span className="text-xl sm:text-2xl">⏱️</span>
+        <span className="text-lg sm:text-xl font-bold text-slate-700 dark:text-slate-200 font-mono">
           {formatTime(timer)}
         </span>
       </div>
