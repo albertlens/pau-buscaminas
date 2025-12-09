@@ -23,25 +23,39 @@ const COLORS = {
 export const Cell: React.FC<CellProps> = ({ cell, onClick, onRightClick, onLongPress, gameStatus }) => {
   const [isPressing, setIsPressing] = useState(false);
   const longPressTimer = useRef<number | null>(null);
+  const longPressTriggered = useRef(false);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     e.preventDefault();
     setIsPressing(true);
+    longPressTriggered.current = false;
+    
     longPressTimer.current = window.setTimeout(() => {
+      longPressTriggered.current = true;
       onLongPress();
       setIsPressing(false);
+      
+      // Vibración háptica si está disponible
+      if (navigator.vibrate) {
+        navigator.vibrate(50);
+      }
     }, 500);
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     e.preventDefault();
+    
     if (longPressTimer.current) {
       clearTimeout(longPressTimer.current);
-      if (isPressing) {
-        onClick();
-      }
     }
+    
+    // Solo hacer click si NO se activó el long press
+    if (isPressing && !longPressTriggered.current) {
+      onClick();
+    }
+    
     setIsPressing(false);
+    longPressTriggered.current = false;
   };
 
   const handleTouchCancel = () => {
@@ -49,6 +63,7 @@ export const Cell: React.FC<CellProps> = ({ cell, onClick, onRightClick, onLongP
       clearTimeout(longPressTimer.current);
     }
     setIsPressing(false);
+    longPressTriggered.current = false;
   };
 
   const getCellContent = () => {
@@ -93,7 +108,7 @@ export const Cell: React.FC<CellProps> = ({ cell, onClick, onRightClick, onLongP
 
   return (
     <button
-      className={`${getCellClasses()} ${isPressing ? 'scale-95' : ''}`}
+      className={`${getCellClasses()} ${isPressing ? 'scale-90 ring-2 ring-blue-500' : ''}`}
       onClick={onClick}
       onContextMenu={onRightClick}
       onTouchStart={handleTouchStart}
