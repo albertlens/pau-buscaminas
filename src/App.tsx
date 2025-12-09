@@ -14,7 +14,6 @@ function App() {
   const {
     board,
     gameStatus,
-    flagCount,
     timer,
     minesLeft,
     handleCellClick,
